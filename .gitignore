@@ -4,8 +4,8 @@
 *.plist
 *.sln
 *.vcxproj*
-/src/.vs
-/src/x64
+/.vs
+/x64
 *.xcbkptlist
 /data
 *.cproject
