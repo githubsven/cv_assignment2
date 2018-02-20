@@ -1,8 +1,10 @@
-
 *.pbxproj
-
 *.xcworkspacedata
-
 *.xcuserstate
-
 *.plist
+*.sln
+*.vcxproj*
+/cv_assignment2/.vs
+/cv_assignment2/x64
+*.xcbkptlist
+/data
