@@ -4,7 +4,10 @@
 *.plist
 *.sln
 *.vcxproj*
-/cv_assignment2/.vs
-/cv_assignment2/x64
+/src/.vs
+/src/x64
 *.xcbkptlist
 /data
+*.cproject
+*.project
+/.settings
