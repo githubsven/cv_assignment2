@@ -1,15 +1,17 @@
-//
-//  main.cpp
-//  cv_assignment2
-//
-//  Created by Sven Luehof on 20/02/2018.
-//  Copyright © 2018 Sven Luehof. All rights reserved.
-//
+#include <cstdlib>
+#include <string>
 
-#include <iostream>
+#include "utilities/General.h"
+#include "VoxelReconstruction.h"
 
-int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
-    return 0;
+using namespace nl_uu_science_gmt;
+
+int main(
+         int argc, char** argv)
+{
+    VoxelReconstruction::showKeys();
+    VoxelReconstruction vr("data" + std::string(PATH_SEP), 4);
+    vr.run(argc, argv);
+    
+    return EXIT_SUCCESS;
 }
