@@ -2,12 +2,9 @@
 *.xcworkspacedata
 *.xcuserstate
 *.plist
-*.sln
-*.vcxproj*
 /.vs
 /x64
 *.xcbkptlist
-/data
 *.cproject
 *.project
 /.settings
