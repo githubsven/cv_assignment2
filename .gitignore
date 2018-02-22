@@ -8,3 +8,8 @@
 *.cproject
 *.project
 /.settings
+*.sdf
+VoxelReconstruction.VC.opendb
+*.vcxproj
+VoxelReconstruction.vcxproj
+*.vcxproj
