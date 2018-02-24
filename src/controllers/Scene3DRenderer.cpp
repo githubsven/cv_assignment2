@@ -65,20 +65,41 @@ Scene3DRenderer::Scene3DRenderer(
 	m_current_frame = 0;
 	m_previous_frame = -1;
 
-	const int H = 0;
-	const int S = 0;
-	const int V = 0;
-	m_h_threshold = H;
-	m_ph_threshold = H;
-	m_s_threshold = S;
-	m_ps_threshold = S;
-	m_v_threshold = V;
-	m_pv_threshold = V;
+	fs.open("data/videosettings.xml", FileStorage::READ);
+	int hue, saturation, value, dilation_size, erode_size;
+	if (fs.isOpened())
+	{
+		fs["Hue"] >> hue;
+		fs["Saturation"] >> saturation;
+		fs["Value"] >> value;
+		fs["DilationSize"] >> dilation_size;
+		fs["ErosionSize"] >> erode_size;
+	}
+	else
+	{
+		hue = 0;
+		saturation = 0;
+		value = 0;
+		dilation_size = 10;
+		erode_size = 10;
+	}
+	fs.release();
+
+	m_h_threshold = hue;
+	m_ph_threshold = hue;
+	m_s_threshold = saturation;
+	m_ps_threshold = saturation;
+	m_v_threshold = value;
+	m_pv_threshold = value;
+	m_dilate_size = dilation_size;
+	m_erode_size = erode_size;
 
 	createTrackbar("Frame", VIDEO_WINDOW, &m_current_frame, m_number_of_frames - 2);
 	createTrackbar("H", VIDEO_WINDOW, &m_h_threshold, 255);
 	createTrackbar("S", VIDEO_WINDOW, &m_s_threshold, 255);
 	createTrackbar("V", VIDEO_WINDOW, &m_v_threshold, 255);
+	createTrackbar("Dilation", VIDEO_WINDOW, &m_dilate_size, 20);
+	createTrackbar("Erosion", VIDEO_WINDOW, &m_erode_size, 20);
 
 	createFloorGrid();
 	setTopView();
@@ -146,6 +167,16 @@ void Scene3DRenderer::processForeground(
 	bitwise_or(foreground, background, foreground);
 
 	// Improve the foreground image
+	// Fill gaps
+	Mat element = getStructuringElement(MORPH_RECT,
+		Size(2 * m_dilate_size + 1, 2 * m_dilate_size + 1),
+		Point(m_dilate_size, m_dilate_size));
+	dilate(foreground, foreground, element);
+
+	element = getStructuringElement(MORPH_RECT,
+		Size(2 * m_erode_size + 1, 2 * m_erode_size + 1),
+		Point(m_erode_size, m_erode_size));
+	erode(foreground, foreground, element);
 
 	camera->setForegroundImage(foreground);
 }
@@ -184,6 +215,21 @@ void Scene3DRenderer::setTopView()
 	m_arcball_eye = vec(0.0f, 0.0f, 10000.0f);
 	m_arcball_centre = vec(0.0f, 0.0f, 0.0f);
 	m_arcball_up = vec(0.0f, 1.0f, 0.0f);
+}
+
+void Scene3DRenderer::setZoomedOutView(int camera)
+{
+	m_camera_view = false;
+	if (m_current_camera != -1)
+		m_previous_camera = m_current_camera;
+	m_current_camera = -1;
+
+	m_arcball_eye.x = m_cameras[camera]->getCameraPlane()[0].x - 1000;
+	m_arcball_eye.y = m_cameras[camera]->getCameraPlane()[0].y - 1000;
+	m_arcball_eye.z = m_cameras[camera]->getCameraPlane()[0].z;
+	m_arcball_up.x = 0.0f;
+	m_arcball_up.y = 0.0f;
+	m_arcball_up.z = 1.0f;
 }
 
 /**

@@ -122,7 +122,7 @@ void VoxelReconstruction::run(int argc, char** argv)
 	}
 
 	destroyAllWindows();
-	namedWindow(VIDEO_WINDOW, CV_WINDOW_KEEPRATIO);
+	namedWindow(VIDEO_WINDOW, 1);
 
 	Reconstructor reconstructor(m_cam_views);
 	Scene3DRenderer scene3d(reconstructor, m_cam_views);

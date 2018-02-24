@@ -335,10 +335,64 @@ void Glut::keyboard(
 			reset();
 			arcball_reset();
 		}
+		else if (key == 'h' || key == 'H')
+		{
+			FileStorage fs;
+			fs.open("data/videosettings.xml", FileStorage::WRITE);
+			if (fs.isOpened()) 
+			{
+				fs << "Hue" << scene3d.getHThreshold();
+				fs << "Saturation" << scene3d.getSThreshold();
+				fs << "Value" << scene3d.getVThreshold();
+				fs << "DilationSize" << scene3d.getDilationSize();
+				fs << "ErosionSize" << scene3d.getErodeSize();
+			}
+			else 
+			{
+				cerr << "Could not open data/videosettings.xml" << endl;
+			}
+			fs.release();
+		}
+		else if (key == 'j' || key == 'J')
+		{
+			FileStorage fs;
+			fs.open("data/videosettings.xml", FileStorage::READ);
+			int hue, saturation, value, dilation_size, erode_size;
+			if (fs.isOpened())
+			{
+				fs["Hue"] >> hue;
+				fs["Saturation"] >> saturation;
+				fs["Value"] >> value;
+				fs["DilationSize"] >> dilation_size;
+				fs["ErosionSize"] >> erode_size;
+				scene3d.setHThreshold(hue);
+				setTrackbarPos("H", VIDEO_WINDOW, hue);
+				scene3d.setSThreshold(saturation);
+				setTrackbarPos("S", VIDEO_WINDOW, saturation);
+				scene3d.setVThreshold(value);
+				setTrackbarPos("V", VIDEO_WINDOW, value);
+				scene3d.setDilationSize(dilation_size);
+				setTrackbarPos("Dilation", VIDEO_WINDOW, dilation_size);
+				scene3d.setErodeSize(erode_size);
+				setTrackbarPos("Erosion", VIDEO_WINDOW, erode_size);
+			}
+			else 
+			{
+				cerr << "Could not open data/videosettings.xml" << endl;
+			}
+			fs.release();
+			scene3d.processForeground(scene3d.getCameras()[scene3d.getCurrentCamera()]);
+		}
 	}
 	else if (key_i > 0 && key_i <= (int) scene3d.getCameras().size())
 	{
 		scene3d.setCamera(key_i - 1);
+		reset();
+		arcball_reset();
+	}
+	else if (key_i > (int)scene3d.getCameras().size() && key_i <= (int)scene3d.getCameras().size() * 2)
+	{
+		scene3d.setZoomedOutView(key_i - 5);
 		reset();
 		arcball_reset();
 	}

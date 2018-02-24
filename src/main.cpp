@@ -10,10 +10,13 @@ using namespace nl_uu_science_gmt;
 int main(
 		int argc, char** argv)
 {
-	ImageUtils::averageVideo("data/cam1", "background");
-	ImageUtils::averageVideo("data/cam2", "background");
-	ImageUtils::averageVideo("data/cam3", "background");
-	ImageUtils::averageVideo("data/cam4", "background");
+	FileStorage fs;
+	for (int i = 1; i <= 4; i++) {
+		fs.open("data/cam" + to_string(i) + "background.png", FileStorage::READ);
+		if (!fs.isOpened())
+			ImageUtils::averageVideo("data/cam" + to_string(i), "background");
+		fs.release();
+	};
 	VoxelReconstruction::showKeys();
 	VoxelReconstruction vr("data" + std::string(PATH_SEP), 4);
 	vr.run(argc, argv);

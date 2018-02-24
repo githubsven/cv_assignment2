@@ -70,6 +70,9 @@ class Scene3DRenderer
 	int m_v_threshold;                        // Value threshold number for background subtraction
 	int m_pv_threshold;                       // Value threshold value at previous iteration (update awareness)
 
+	int m_dilate_size;						  // Size of the dilation element.
+	int m_erode_size;						  // Size of the erode element.
+
 	// edge points of the virtual ground floor grid
 	std::vector<std::vector<cv::Point3i*> > m_floor_grid;
 
@@ -91,6 +94,7 @@ public:
 	void setCamera(
 			int);
 	void setTopView();
+	void setZoomedOutView(int);
 
 	const std::vector<Camera*>& getCameras() const
 	{
@@ -411,6 +415,26 @@ public:
 	int getSquareSideLen() const
 	{
 		return m_square_side_len;
+	}
+
+	int getDilationSize() const
+	{
+		return m_dilate_size;
+	}
+
+	int getErodeSize() const
+	{
+		return m_erode_size;
+	}
+
+	void setDilationSize(int size)
+	{
+		m_dilate_size = size;
+	}
+
+	void setErodeSize(int size)
+	{
+		m_erode_size = size;
 	}
 };
 
