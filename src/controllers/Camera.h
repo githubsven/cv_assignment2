@@ -71,6 +71,8 @@ public:
 	void setVideoFrame(int);
 
 	static bool detExtrinsics(const std::string &, const std::string &, const std::string &, const std::string &);
+	void detIntrinsics();
+	std::vector<std::vector<cv::Point2f>> getImagePoints(cv::Size imageSize);
 
 	static cv::Point projectOnView(const cv::Point3f &, const cv::Mat &, const cv::Mat &, const cv::Mat &, const cv::Mat &);
 	cv::Point projectOnView(const cv::Point3f &);

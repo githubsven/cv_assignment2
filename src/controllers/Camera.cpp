@@ -195,6 +195,86 @@ void Camera::onMouse(
 	}
 }
 
+vector<vector<Point2f>> Camera::getImagePoints(Size imageSize)
+{
+	vector<vector<Point2f>> image_points;
+	VideoCapture cap(m_data_path + General::IntrinsicsVideo); // open the intrinsics camera
+	cout << "Opening: " + m_data_path + General::IntrinsicsVideo << endl;
+	if (!cap.isOpened())  // check if we succeeded
+		return image_points;
+
+	int count = 0;
+	for (;;)
+	{
+		Mat frame;
+		bool foundFrame = cap.read(frame); // get a new frame from camera
+		if (!foundFrame) 
+			return image_points;
+		count++;
+		if (count % 30 == 0) {
+			vector<Point2f> pointBuf;
+			bool found = findChessboardCorners(frame, imageSize, pointBuf,
+				CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_FAST_CHECK | CV_CALIB_CB_NORMALIZE_IMAGE);
+
+			if (found)  // If done with success,
+			{
+				// improve the found corners' coordinate accuracy for chessboard
+				Mat viewGray;
+				cvtColor(frame, viewGray, COLOR_BGR2GRAY);
+				cornerSubPix(viewGray, pointBuf, Size(11, 11),
+					Size(-1, -1), TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 30, 0.1));
+				image_points.push_back(pointBuf);
+			}
+			cout << count << endl;
+		}
+	}
+	// the camera will be deinitialized automatically in VideoCapture destructor
+	return image_points;
+}
+
+void Camera::detIntrinsics()
+{
+	int cb_width = 0, cb_height = 0;
+	int cb_square_size = 0;
+
+	// Read the checkerboard properties (XML)
+	FileStorage fs;
+	fs.open(m_data_path + ".." + string(PATH_SEP) + General::CBConfigFile, FileStorage::READ);
+	if (fs.isOpened())
+	{
+		fs["CheckerBoardWidth"] >> cb_width;
+		fs["CheckerBoardHeight"] >> cb_height;
+		fs["CheckerBoardSquareSize"] >> cb_square_size;
+	}
+	fs.release();
+
+	Mat cameraMatrix = Mat::eye(3, 3, CV_64F);
+	if (CV_CALIB_FIX_ASPECT_RATIO)
+		cameraMatrix.at<double>(0, 0) = 1.0;
+
+	Mat distCoeffs = Mat::zeros(8, 1, CV_64F);
+	vector<Mat> rvecs; vector<Mat> tvecs;
+	
+	//Find intrinsic and extrinsic camera parameters
+	Size imageSize = Size(cb_width, cb_height);
+
+	vector<vector<Point3f>> object_points(1);
+	vector<vector<Point2f>> image_points = getImagePoints(imageSize);
+	for (int i = 0; i < cb_height; i++)
+		for (int j = 0; j < cb_width; j++)
+			object_points[0].push_back(Point3f(i * cb_square_size, j * cb_square_size, 0)); // The 3D points that correspond to the image points
+	object_points.resize(image_points.size(), object_points[0]);
+
+	cout << "Finding camera intrinsic matrix";
+	double rms = calibrateCamera(object_points, image_points, imageSize, cameraMatrix,
+		distCoeffs, rvecs, tvecs, CV_CALIB_FIX_K4 | CV_CALIB_FIX_K5);
+
+	cout << "Writing findings to " + m_data_path + General::IntrinsicsFile;
+	fs.open(m_data_path + General::IntrinsicsFile, FileStorage::WRITE);
+	fs << "CameraMatrix" << cameraMatrix << "DistortionCoeffs" << distCoeffs;
+	fs.release();
+}
+
 /**
  * - Determine the camera's extrinsics based on a checkerboard image and the camera intrinsics
  * - Allows for hand pointing the checkerboard corners
