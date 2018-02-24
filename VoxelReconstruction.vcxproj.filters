@@ -36,6 +36,12 @@
     <ClCompile Include="src\controllers\Scene3DRenderer.cpp">
       <Filter>src\controllers</Filter>
     </ClCompile>
+    <ClCompile Include="src\calibrate.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\background.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\VoxelReconstruction.h">
@@ -58,6 +64,12 @@
     </ClInclude>
     <ClInclude Include="src\controllers\Scene3DRenderer.h">
       <Filter>src\controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\calibrate.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\background.h">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
