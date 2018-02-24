@@ -3,17 +3,17 @@
 
 #include "utilities/General.h"
 #include "VoxelReconstruction.h"
-#include "background.h"
+#include "ImageUtils.h"
 
 using namespace nl_uu_science_gmt;
 
 int main(
 		int argc, char** argv)
 {
-	Background::averageBackground("data/cam1", "background.avi");
-	Background::averageBackground("data/cam2", "background.avi");
-	Background::averageBackground("data/cam3", "background.avi");
-	Background::averageBackground("data/cam4", "background.avi");
+	ImageUtils::averageVideo("data/cam1", "background");
+	ImageUtils::averageVideo("data/cam2", "background");
+	ImageUtils::averageVideo("data/cam3", "background");
+	ImageUtils::averageVideo("data/cam4", "background");
 	VoxelReconstruction::showKeys();
 	VoxelReconstruction vr("data" + std::string(PATH_SEP), 4);
 	vr.run(argc, argv);

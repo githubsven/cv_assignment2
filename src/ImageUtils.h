@@ -12,9 +12,9 @@
 using namespace cv;
 using namespace std;
 
-class Background {
+class ImageUtils {
 public: 
-	static void averageBackground(const std::string folder, const std::string file);
+	static void averageVideo(const std::string folder, const std::string file);
 };
 
 #endif /* BACKGROUND_UTILS_ */

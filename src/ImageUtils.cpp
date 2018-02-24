@@ -6,7 +6,7 @@
 #include <opencv2/calib3d/calib3d.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
-#include "background.h"
+#include "ImageUtils.h"
 
 using namespace cv;
 using std::string;
@@ -16,10 +16,12 @@ using std::endl;
 using std::vector;
 
 
-void Background::averageBackground(const std::string folder, const std::string file) {
+/**
+ *	Averages a video into a png
+ */
+void ImageUtils::averageVideo(const std::string folder, const std::string file) {
 	string filename(folder);
-	filename.append("/");
-	filename.append(file);
+	filename.append("/").append(file).append(".avi");
 	VideoCapture video(filename);
 	if (!video.isOpened()) {
 		string error = "Error when reading ";
@@ -31,8 +33,7 @@ void Background::averageBackground(const std::string folder, const std::string f
 	Mat avgFrame;
 
 	string outFile(folder);
-	outFile.append("/");
-	outFile.append("background.png");
+	outFile.append("/").append(file).append(".png");
 
 	int nFrames = 0;
 	for (;;) {

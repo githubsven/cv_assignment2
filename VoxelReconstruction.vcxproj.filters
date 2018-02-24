@@ -36,10 +36,7 @@
     <ClCompile Include="src\controllers\Scene3DRenderer.cpp">
       <Filter>src\controllers</Filter>
     </ClCompile>
-    <ClCompile Include="src\calibrate.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\background.cpp">
+    <ClCompile Include="src\ImageUtils.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -65,10 +62,7 @@
     <ClInclude Include="src\controllers\Scene3DRenderer.h">
       <Filter>src\controllers</Filter>
     </ClInclude>
-    <ClInclude Include="src\calibrate.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\background.h">
+    <ClInclude Include="src\ImageUtils.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
